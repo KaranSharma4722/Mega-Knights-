@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harvest AI: Your Partner in Smart Farming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for a smoother transition */
+        :root {
+            --bg-color: #dcfce7;
+            --text-color: #0c4a1e;
+            --header-bg: #fff;
+            --header-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --card-bg: #fff;
+            --border-color: #a7f3d0;
+            --accent-color: #22c55e;
+            --link-color: #4b5563;
+            --hover-link-color: #15803d;
+            --active-link-color: #15803d;
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            --bg-color: #1a202c;
+            --text-color: #e2e8f0;
+            --header-bg: #2d3748;
+            --header-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -2px rgba(255, 255, 255, 0.1);
+            --card-bg: #4a5568;
+            --border-color: #4b5563;
+            --accent-color: #48bb78;
+            --link-color: #a0aec0;
+            --hover-link-color: #e2e8f0;
+            --active-link-color: #48bb78;
+        }
+
+        /* Disco Mode - Pure CSS animations for background */
+        .disco-mode {
+            animation: discoLights 5s infinite;
+            --text-color: #fff;
+            --header-bg: #111;
+            --header-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.2), 0 2px 4px -2px rgba(255, 255, 255, 0.2);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --border-color: #fff;
+            --accent-color: #fff;
+            --link-color: #fff;
+            --hover-link-color: #ff0;
+            --active-link-color: #fff;
+        }
+
+        @keyframes discoLights {
+            0% { background-color: #ff007f; }
+            16.6% { background-color: #ff00ff; }
+            33.3% { background-color: #00ffff; }
+            50% { background-color: #00ff00; }
+            66.6% { background-color: #ffff00; }
+            83.3% { background-color: #ff007f; }
+            100% { background-color: #ff007f; }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        /* Apply variables to existing classes */
+        .bg-white { background-color: var(--card-bg); }
+        .shadow-lg { box-shadow: var(--header-shadow); }
+        .text-green-800, .text-gray-700 { color: var(--text-color); }
+        .text-gray-600 { color: var(--link-color); }
+        .hover\:text-green-800:hover { color: var(--hover-link-color); }
+        .nav-link.active { color: var(--active-link-color); }
+        .border-green-500 { border-color: var(--accent-color); }
+        .bg-green-500 { background-color: var(--accent-color); }
+        .hover\:bg-green-600:hover { background-color: var(--hover-link-color); }
+        .bg-green-900 { background-color: var(--hover-link-color); }
+        .text-gray-300 { color: var(--link-color); }
+        .hover\:text-white:hover { color: var(--text-color); }
+        .bg-red-500 { background-color: var(--accent-color); }
+        .text-white { color: var(--text-color); }
+
+        .nav-link.active {
+            font-weight: 600;
+        }
+        .page-content {
+            display: none;
+        }
+        .page-content.active {
+            display: block;
+        }
+        .message-box {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            z-index: 1000;
+            transition: opacity 0.3s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        /* Tractor Animation */
+        #tractor-animation {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            z-index: 50;
+            animation: tractorMove 30s linear infinite;
+        }
+        @keyframes tractorMove {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100vw);
+            }
+        }
+
+        /* Fade-in Animation for the new section */
+        .animate-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Left-to-right fade-in animation */
+        @keyframes fadeInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .animate-fadeInLeft {
+            animation: fadeInLeft 1s ease-out forwards;
+        }
+
+        /* Navbar Underline Effect */
+        .nav-link {
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent-color);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* Hamburger Menu Styling */
+        #mobile-menu-button {
+            display: none; /* Hide by default */
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            #mobile-menu-button {
+                display: block; /* Show hamburger on mobile */
+            }
+
+            #desktop-nav {
+                display: none; /* Hide desktop nav on mobile */
+            }
+
+            #mobile-nav {
+                display: none; /* Hidden by default for mobile nav */
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--header-bg);
+                border-top: 1px solid var(--border-color);
+                z-index: 40;
+            }
+
+            #mobile-nav.flex {
+                display: flex; /* Show mobile nav when flex is added */
+            }
+
+            .mobile-nav-link {
+                padding: 1rem;
+                text-align: center;
+                border-bottom: 1px solid var(--border-color);
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="bg-white shadow-lg p-4 sticky top-0 z-50 rounded-b-xl">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m-9-1a9 9 0 1118 0v7a.75.75 0 01-.75.75H5.75A.75.75 0 015 21v-7a9 9 0 0118 0z" />
+                </svg>
+                <h1 class="text-xl sm:text-2xl font-bold text-green-800">Harvest AI</h1>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <nav id="desktop-nav" class="hidden md:flex items-center space-x-4 md:space-x-8">
+                <a href="#home" class="nav-link text-gray-600 hover:text-green-800 transition-colors font-medium">Home</a>
+                <a href="#about" class="nav-link text-gray-600 hover:text-green-800 transition-colors font-medium">About</a>
+                <a href="#how-it-works" class="nav-link text-gray-600 hover:text-green-800 transition-colors font-medium">How It Works</a>
+                <a href="#features" class="nav-link text-gray-600 hover:text-green-800 transition-colors font-medium">Features</a>
+                <a id="auth-link-desktop" href="#auth" class="nav-link text-gray-600 hover:text-green-800 transition-colors font-medium">Sign Up / Log In</a>
+                <button id="logout-btn-desktop" class="hidden bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">Log Out</button>
+
+                <!-- Theme Switcher Button -->
+                <button id="theme-switcher-btn-desktop" class="p-2 ml-4 rounded-full bg-gray-200 text-gray-800 shadow-md hover:bg-gray-300 transition-colors duration-300">
+                    <svg id="theme-icon-desktop" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg text-gray-600 hover:text-green-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <nav id="mobile-nav" class="md:hidden mt-4">
+            <a href="#home" class="mobile-nav-link text-gray-600 hover:text-green-800 font-medium">Home</a>
+            <a href="#about" class="mobile-nav-link text-gray-600 hover:text-green-800 font-medium">About</a>
+            <a href="#how-it-works" class="mobile-nav-link text-gray-600 hover:text-green-800 font-medium">How It Works</a>
+            <a href="#features" class="mobile-nav-link text-gray-600 hover:text-green-800 font-medium">Features</a>
+            <a id="auth-link-mobile" href="#auth" class="mobile-nav-link text-gray-600 hover:text-green-800 font-medium">Sign Up / Log In</a>
+            <button id="logout-btn-mobile" class="hidden mobile-nav-link bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 transition-colors duration-300">Log Out</button>
+            <button id="theme-switcher-btn-mobile" class="mobile-nav-link rounded-full text-gray-600 hover:text-green-800 transition-colors duration-300">
+                <span class="flex items-center justify-center">
+                    <svg id="theme-icon-mobile" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <span>Theme</span>
+                </span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:px-8">
+        <!-- Home Page -->
+        <section id="home" class="page-content active">
+            <div class="text-center py-8 md:py-16 px-4 md:px-8 bg-white rounded-3xl shadow-lg">
+                <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-green-800 leading-tight mb-4 animate-fadeInLeft">
+                    Hello there!
+                </h2>
+                <p class="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                    Cultivate Smarter, Not Harder. Because even your plants deserve a smart friend.
+                </p>
+                <div class="w-full max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl">
+                    <img src="https://placehold.co/1200x600/dcfce7/15803d?text=Harvest+AI+Home+Page" alt="Placeholder image for Harvest AI home page" class="w-full h-auto object-cover">
+                </div>
+            </div>
+
+            <!-- AI-Powered Crop Recommendation Section -->
+            <section id="recommendation-section" class="py-8 md:py-16 px-4 md:px-8 bg-white rounded-3xl shadow-lg mt-8 animate-fade-in">
+                <h2 class="text-2xl sm:text-3xl font-bold text-green-800 mb-6 text-center">AI-Powered Crop Recommendation</h2>
+                <p class="text-base sm:text-lg text-center text-gray-600 mb-8 max-w-3xl mx-auto">
+                    Select your soil and climate to get a personalized crop recommendation from our AI.
+                </p>
+                <form id="recommendation-form" class="max-w-xl mx-auto space-y-6">
+                    <div>
+                        <label for="soil-type" class="block text-gray-700 font-medium mb-2">Soil Type</label>
+                        <select id="soil-type" name="soil-type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="Clay">Clay</option>
+                            <option value="Sandy">Sandy</option>
+                            <option value="Loamy">Loamy</option>
+                            <option value="Silty">Silty</option>
+                            <option value="Peaty">Peaty</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="climate-type" class="block text-gray-700 font-medium mb-2">Climate Type</label>
+                        <select id="climate-type" name="climate-type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="Tropical">Tropical</option>
+                            <option value="Temperate">Temperate</option>
+                            <option value="Arid">Arid</option>
+                            <option value="Continental">Continental</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label for="temperature-range" class="block text-gray-700 font-medium mb-2">Temperature Range</label>
+                        <select id="temperature-range" name="temperature-range" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="Warm">Warm (25-35°C)</option>
+                            <option value="Moderate">Moderate (15-25°C)</option>
+                            <option value="Cool">Cool (5-15°C)</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label for="budget" class="block text-gray-700 font-medium mb-2">Budget (in USD)</label>
+                        <input type="number" id="budget" name="budget" min="0" step="10" placeholder="e.g., 500" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                    </div>
+                    <button type="submit" id="recommendation-btn" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-green-600 transition-colors duration-300">
+                        Get Crop Recommendation
+                    </button>
+                    <div id="loading-indicator" class="hidden text-center text-gray-500">
+                        <svg class="animate-spin h-8 w-8 text-green-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="mt-2">Thinking like a plant...</p>
+                    </div>
+                </form>
+
+                <div id="recommendation-result" class="hidden mt-8 md:mt-12 p-8 bg-green-50 rounded-2xl shadow-inner border border-green-300">
+                    <h3 class="text-xl sm:text-2xl font-bold text-green-800 mb-4 text-center">Your Ideal Crop: <span id="crop-name" class="text-green-600"></span></h3>
+                    <div class="md:flex md:space-x-8 items-center">
+                        <div class="md:w-1/3 flex-shrink-0 mb-4 md:mb-0">
+                            <img id="crop-image" class="w-full h-auto rounded-xl shadow-lg object-cover" src="" alt="Recommended Crop Image">
+                        </div>
+                        <div class="md:w-2/3">
+                            <p id="crop-description" class="text-gray-700 leading-relaxed text-sm sm:text-base"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- About Page -->
+        <section id="about" class="page-content">
+            <div class="py-8 md:py-16 px-4 md:px-8 bg-white rounded-3xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-green-800 mb-6 text-center">About Our Mission</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4 text-gray-700 leading-relaxed text-sm sm:text-base">
+                        <p>
+                            Farmers often face a tough decision: what crop will thrive in their unique soil and climate conditions? Unpredictable weather and varying seasonal factors can lead to crop failures and wasted resources. Our mission with **Harvest AI** is to provide a data-driven solution to this age-old problem.
+                        </p>
+                        <p>
+                            We leverage machine learning models, historical data, and real-time environmental APIs to deliver accurate, data-backed crop recommendations. By doing so, we aim to optimize farming practices, enhance productivity, and promote sustainable agriculture.
+                        </p>
+                    </div>
+                    <div class="rounded-xl overflow-hidden shadow-xl">
+                        <img src="https://placehold.co/600x400/dcfce7/15803d?text=About+Harvest+AI" alt="A farmer using a tablet to check data" class="w-full h-auto object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Page -->
+        <section id="how-it-works" class="page-content">
+            <div class="py-8 md:py-16 px-4 md:px-8 bg-white rounded-3xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-green-800 mb-6 text-center">How It Works</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="text-center p-6 bg-green-50 rounded-2xl shadow-md">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold text-green-800 mb-2">1. Input Your Data</h4>
+                        <p class="text-gray-600 text-sm sm:text-base">Enter key details like your soil type, climate, and the current season. This takes just a few minutes!</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="text-center p-6 bg-green-50 rounded-2xl shadow-md">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 11.5l5 5m0 0l5-5m-5 5V4m0 16a2 2 0 110-4 2 2 0 010 4z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold text-green-800 mb-2">2. We Analyze It</h4>
+                        <p class="text-gray-600 text-sm sm:text-base">Our powerful AI model processes your input with real-time weather and soil data from global APIs.</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="text-center p-6 bg-green-50 rounded-2xl shadow-md">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                        </div>
+                        <h4 class="text-lg sm:text-xl font-bold text-green-800 mb-2">3. Get Your Recommendations</h4>
+                        <p class="text-gray-600 text-sm sm:text-base">Receive a tailored list of the most suitable crops, along with tips on irrigation and fertilizer use.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Features Page -->
+        <section id="features" class="page-content">
+            <div class="py-8 md:py-16 px-4 md:px-8 bg-white rounded-3xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-green-800 mb-6 text-center">Key Features</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-green-500">
+                        <img src="https://placehold.co/600x400/22c55e/ffffff?text=Smart+Recommendations" alt="A tablet showing a list of crops" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h4 class="text-xl font-bold text-green-800 mb-2">Accurate Crop Recommendations</h4>
+                            <p class="text-gray-600 text-sm">
+                                Get precise suggestions based on your specific soil and climate conditions to maximize your yield.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-green-500">
+                        <img src="https://placehold.co/600x400/22c55e/ffffff?text=Real-Time+Data" alt="A diagram showing data flowing into a brain icon" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h4 class="text-xl font-bold text-green-800 mb-2">Real-Time Data Integration</h4>
+                            <p class="text-gray-600 text-sm">
+                                We use up-to-the-minute weather and soil data to ensure our recommendations are always relevant.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border-t-4 border-green-500">
+                        <img src="https://placehold.co/600x400/22c55e/ffffff?text=User-Friendly+Interface" alt="A clean, simple user interface on a laptop" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h4 class="text-xl font-bold text-green-800 mb-2">User-Friendly Interface</h4>
+                            <p class="text-gray-600 text-sm">
+                                Our simple, intuitive design means anyone can use the platform, regardless of technical skill.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Page -->
+        <section id="contact" class="page-content">
+            <div class="py-8 md:py-16 px-4 md:px-8 bg-white rounded-3xl shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-bold text-green-800 mb-6 text-center">Get in Touch</h2>
+                <div class="max-w-xl mx-auto text-center space-y-4">
+                    <p class="text-gray-700 leading-relaxed text-sm sm:text-base">
+                        Have questions about our project or want to collaborate? Feel free to reach out to us. We're always looking for new partners to help us grow the Harvest AI platform.
+                    </p>
+                    <a href="mailto:info@harvestai.com" class="inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300">
+                        Send Us an Email
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Auth Page (Login/Signup) -->
+        <section id="auth" class="page-content">
+            <div class="py-8 md:py-16 px-4 md:px-8 bg-white rounded-3xl shadow-lg max-w-lg mx-auto">
+                <h2 id="auth-title" class="text-2xl sm:text-3xl font-bold text-green-800 mb-6 text-center">Sign Up</h2>
+                <form id="auth-form" class="space-y-6">
+                    <div id="auth-fields" class="space-y-4">
+                        <div id="signup-fields" class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-gray-700 font-medium mb-1">Name</label>
+                                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-gray-700 font-medium mb-1">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-gray-700 font-medium mb-1">Email Address</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                        </div>
+                        <div>
+                            <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
+                            <input type="password" id="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-green-600 transition-colors duration-300">
+                        <span id="auth-btn-text">Sign Up</span>
+                    </button>
+                    <div id="auth-error-message" class="text-red-500 text-center mt-4 hidden"></div>
+                </form>
+                <div class="text-center mt-4">
+                    <p id="toggle-auth-text" class="text-gray-600">Already have an account? <a href="#" id="toggle-auth-link" class="text-green-600 hover:underline">Log In</a></p>
+                </div>
+                 <div id="forgot-password-link-container" class="text-center mt-2 hidden">
+                    <a href="#" id="forgot-password-link" class="text-green-600 hover:underline text-sm">Forgot Password?</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Tractor Animation Container -->
+    <div id="tractor-animation" class="text-5xl">
+        <span>🚜</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-green-900 text-white py-8 md:py-12 mt-8 md:mt-12 rounded-t-xl shadow-inner">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm">
+                &copy; 2025 Harvest AI. All Rights Reserved.
+            </p>
+            <div class="flex justify-center flex-wrap space-x-2 sm:space-x-4 mt-4">
+                <a href="#" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
+                <span class="text-gray-300 hidden sm:block">|</span>
+                <a href="#" class="text-gray-300 hover:text-white transition-colors">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Set Firebase debug log level
+        setLogLevel('Debug');
+
+        const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+        const pages = document.querySelectorAll('.page-content');
+        const authLinkDesktop = document.getElementById('auth-link-desktop');
+        const authLinkMobile = document.getElementById('auth-link-mobile');
+        const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
+        const logoutBtnMobile = document.getElementById('logout-btn-mobile');
+        const authForm = document.getElementById('auth-form');
+        const authTitle = document.getElementById('auth-title');
+        const authBtnText = document.getElementById('auth-btn-text');
+        const toggleAuthText = document.getElementById('toggle-auth-text');
+        const toggleAuthLink = document.getElementById('toggle-auth-link');
+        const signupFields = document.getElementById('signup-fields');
+        const authErrorMessage = document.getElementById('auth-error-message');
+        const body = document.body;
+        const themeSwitcherBtnDesktop = document.getElementById('theme-switcher-btn-desktop');
+        const themeSwitcherBtnMobile = document.getElementById('theme-switcher-btn-mobile');
+        const themeIconDesktop = document.getElementById('theme-icon-desktop');
+        const themeIconMobile = document.getElementById('theme-icon-mobile');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileNav = document.getElementById('mobile-nav');
+
+        // New elements for crop recommendation
+        const recommendationSection = document.getElementById('recommendation-section');
+        const recommendationForm = document.getElementById('recommendation-form');
+        const recommendationResult = document.getElementById('recommendation-result');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const cropNameSpan = document.getElementById('crop-name');
+        const cropImage = document.getElementById('crop-image');
+        const cropDescription = document.getElementById('crop-description');
+
+        let isLogin = false;
+        let db, auth;
+        let userId;
+
+        let currentTheme = 'light';
+
+        const themeIcons = {
+            light: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`,
+            dark: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>`,
+            disco: `<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.666 4.908A7.01 7.01 0 0115 12a7.01 7.01 0 01-3.334 7.092M12 3v18m6.364-15.636l-.707.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`
+        };
+
+        // Message box utility
+        const showMessage = (message, isError = false) => {
+            const msgBox = document.createElement('div');
+            msgBox.textContent = message;
+            msgBox.className = `message-box ${isError ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
+            document.body.appendChild(msgBox);
+            setTimeout(() => {
+                msgBox.style.opacity = '0';
+                setTimeout(() => msgBox.remove(), 300);
+            }, 3000);
+        };
+
+        // Function to show a specific page and update active link
+        const showPage = (pageId) => {
+            pages.forEach(page => {
+                const isActive = '#' + page.id === pageId;
+                page.classList.toggle('active', isActive);
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === pageId);
+            });
+            // Hide mobile menu after selecting a link
+            mobileNav.classList.remove('flex');
+        };
+
+        // Function to clear the form fields
+        const clearAuthForm = () => {
+            authForm.email.value = '';
+            authForm.password.value = '';
+            if (authForm.name) authForm.name.value = '';
+            if (authForm.phone) authForm.phone.value = '';
+        };
+
+        const updateAuthUI = (user) => {
+            if (user) {
+                authLinkDesktop.classList.add('hidden');
+                logoutBtnDesktop.classList.remove('hidden');
+                authLinkMobile.classList.add('hidden');
+                logoutBtnMobile.classList.remove('hidden');
+            } else {
+                authLinkDesktop.classList.remove('hidden');
+                logoutBtnDesktop.classList.add('hidden');
+                authLinkMobile.classList.remove('hidden');
+                logoutBtnMobile.classList.add('hidden');
+            }
+        };
+
+        // Initialize Firebase
+        const initializeFirebase = async () => {
+            try {
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                const __initial_auth_token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+                if (__initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    userId = user ? user.uid : crypto.randomUUID();
+                    updateAuthUI(user);
+                });
+
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+            }
+        };
+
+        // Handle form submission
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            authErrorMessage.textContent = '';
+            authErrorMessage.classList.add('hidden');
+
+            if (!auth || !db) {
+                showMessage("App is not ready yet, please wait a moment.", true);
+                return;
+            }
+
+            const email = authForm.email.value;
+            const password = authForm.password.value;
+            const name = authForm.name.value;
+            const phone = authForm.phone.value;
+            
+            try {
+                if (isLogin) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    showMessage("Welcome back, chief! Your crops missed you.", false);
+                } else {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    
+                    // Save additional user info to Firestore
+                    const app_id = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                    await setDoc(doc(db, `/artifacts/${app_id}/users/${user.uid}/profile/details`), {
+                        name: name,
+                        email: email,
+                        phone: phone || null,
+                        createdAt: new Date()
+                    });
+                    showMessage("Welcome to the Harvest AI family! Let's get growing.", false);
+                }
+                clearAuthForm();
+                setTimeout(() => showPage('#home'), 2000);
+            } catch (error) {
+                clearAuthForm();
+                console.error("Authentication error:", error);
+                
+                // Provide more specific error messages to the user
+                let userMessage = "Something went wrong. Please check your credentials and try again.";
+                switch(error.code) {
+                    case 'auth/wrong-password':
+                    case 'auth/user-not-found':
+                    case 'auth/invalid-credential':
+                        userMessage = "Either your email or password was wrong. Please check and try again.";
+                        break;
+                    case 'auth/email-already-in-use':
+                        userMessage = "This email is already registered. Try logging in or use a different email.";
+                        break;
+                    case 'auth/weak-password':
+                        userMessage = "Password is too weak. Please use a stronger password.";
+                        break;
+                }
+                
+                authErrorMessage.textContent = userMessage;
+                authErrorMessage.classList.remove('hidden');
+                showMessage(userMessage, true);
+            }
+        });
+
+        // Toggle between login and signup
+        toggleAuthLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLogin = !isLogin;
+            authErrorMessage.textContent = '';
+            authErrorMessage.classList.add('hidden');
+            if (isLogin) {
+                authTitle.textContent = "Log In";
+                authBtnText.textContent = "Log In";
+                signupFields.classList.add('hidden');
+                toggleAuthLink.textContent = "Sign Up";
+                toggleAuthText.textContent = "Don't have an account? ";
+                toggleAuthText.appendChild(toggleAuthLink);
+            } else {
+                authTitle.textContent = "Sign Up";
+                authBtnText.textContent = "Sign Up";
+                signupFields.classList.remove('hidden');
+                toggleAuthLink.textContent = "Log In";
+                toggleAuthText.textContent = "Already have an account? ";
+                toggleAuthText.appendChild(toggleAuthLink);
+            }
+        });
+
+        // Log out button
+        logoutBtnDesktop.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                showPage('#home');
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        });
+        logoutBtnMobile.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                showPage('#home');
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        });
+
+        // Event listeners for navigation links
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.getAttribute('href');
+                showPage(pageId);
+            });
+        });
+        
+        // Mobile menu button toggle
+        mobileMenuButton.addEventListener('click', () => {
+            mobileNav.classList.toggle('flex');
+        });
+
+        // Initial page load: show the home page
+        showPage('#home');
+        initializeFirebase();
+
+        // Theme switching logic
+        const updateTheme = (theme) => {
+            body.classList.remove('light', 'dark-mode', 'disco-mode');
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+                themeIconDesktop.innerHTML = themeIcons.dark;
+                themeIconMobile.innerHTML = themeIcons.dark;
+            } else if (theme === 'disco') {
+                body.classList.add('disco-mode');
+                themeIconDesktop.innerHTML = themeIcons.disco;
+                themeIconMobile.innerHTML = themeIcons.disco;
+            } else {
+                body.classList.add('light');
+                themeIconDesktop.innerHTML = themeIcons.light;
+                themeIconMobile.innerHTML = themeIcons.light;
+            }
+            currentTheme = theme;
+        };
+        
+        const handleThemeSwitch = () => {
+            const themes = ['light', 'dark', 'disco'];
+            const currentIndex = themes.indexOf(currentTheme);
+            const nextIndex = (currentIndex + 1) % themes.length;
+            updateTheme(themes[nextIndex]);
+        };
+
+        themeSwitcherBtnDesktop.addEventListener('click', handleThemeSwitch);
+        themeSwitcherBtnMobile.addEventListener('click', handleThemeSwitch);
+
+
+        // Intersection Observer for fade-in animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Stop observing once it's visible to save resources
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 }); // Trigger when 50% of the element is in view
+
+        observer.observe(recommendationSection);
+
+        // Handle recommendation form submission
+        recommendationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Show loading state and hide previous results
+            loadingIndicator.classList.remove('hidden');
+            recommendationResult.classList.add('hidden');
+            
+            // Hardcoded sample data
+            const sampleCrop = {
+                cropName: "Tomatoes",
+                description: "Tomatoes are a versatile and popular crop that thrive in a warm climate with loamy soil. They require consistent watering and benefit from plenty of sunlight. They can be grown in gardens or large fields and are a great choice for farmers working within a moderate budget.",
+                imageUrl: "https://placehold.co/400x300/a7f3d0/065f46?text=Tomatoes"
+            };
+
+            // Simulate API latency
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Populate the recommendation section with sample data
+            cropNameSpan.textContent = sampleCrop.cropName;
+            cropDescription.textContent = sampleCrop.description;
+            cropImage.src = sampleCrop.imageUrl;
+            
+            // Show the result and hide loading
+            recommendationResult.classList.remove('hidden');
+            loadingIndicator.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
